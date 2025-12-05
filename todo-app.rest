@@ -1,0 +1,46 @@
+### GET /
+GET http://localhost:3016
+
+### Resitration of user POST /AUTH/RESGITER
+POST http://localhost:3016/auth/register
+Content-Type: application/json
+
+{
+    "username" : "keshav1@gmail.com",
+    "password" : "keshav"
+}
+
+### Login 
+POST http://localhost:3016/auth/login
+Content-Type: application/json
+
+{
+    "username" : "keshav@gmail.com",
+    "password" : "keshav"
+}
+
+### GET TODO
+GET http://localhost:3016/todos
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzY0ODM1ODAyLCJleHAiOjE3NjQ5MjIyMDJ9.OOpukDU3ierg-OKGhxB9rgDcctqOsO5wYXXH0oFHFJg
+
+### CREATES TODO
+POST http://localhost:3016/todos
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzY0ODM1ODAyLCJleHAiOjE3NjQ5MjIyMDJ9.OOpukDU3ierg-OKGhxB9rgDcctqOsO5wYXXH0oFHFJg
+Content-Type: application/json
+
+{
+    "task" : "Finish learning"
+}
+
+### Update todo PUT/todos/:id
+PUT http://localhost:3016/todos/3
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzY0ODM1ODAyLCJleHAiOjE3NjQ5MjIyMDJ9.OOpukDU3ierg-OKGhxB9rgDcctqOsO5wYXXH0oFHFJg
+Content-Type: application/json
+
+{
+    "completed":1
+}
+
+### Delete todo PUT/todos/:id
+DELETE http://localhost:3016/todos/3
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzY0ODM1ODAyLCJleHAiOjE3NjQ5MjIyMDJ9.OOpukDU3ierg-OKGhxB9rgDcctqOsO5wYXXH0oFHFJg
