@@ -5,7 +5,7 @@ async function loadTasks() {
     window.location.href = "/auth.html";
   }
   try {
-    const response = await fetch(`${baseURL}/api/tasks`, {
+    const response = await fetchWithRetry(`${baseURL}/api/tasks`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -61,7 +61,7 @@ async function deleteTask(id) {
     window.location.href = "/auth.html";
   }
   try {
-    const response = await fetch(`${baseURL}/api/delete/${id}`, {
+    const response = await fetchWithRetry(`${baseURL}/api/delete/${id}`, {
       method: "DELETE",
       headers:{
         "Authorization" : `Bearer ${token}`
@@ -91,7 +91,7 @@ async function addTask() {
   if (!title) return;
 
   try {
-    const response = await fetch(`${baseURL}/api/tasks`, {
+    const response = await fetchWithRetry(`${baseURL}/api/tasks`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -120,7 +120,7 @@ async function editTask(id) {
     window.location.href = "/auth.html";
   }
   try {
-    const response = await fetch(`${baseURL}/api/update/${id}`, {
+    const response = await fetchWithRetry(`${baseURL}/api/update/${id}`, {
       method: "POST",
       headers: {
         "Authorization":`Bearer ${token}`,

@@ -7,7 +7,7 @@ async function signup() {
   if (!password) return;
 
   try {
-    const response = await fetch(`${baseURL}/auth/signup`, {
+    const response = await fetchWithRetry(`${baseURL}/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +43,7 @@ async function login() {
   if (!password) return;
 
   try {
-    const response = await fetch(`${baseURL}/auth/login`, {
+    const response = await fetchWithRetry(`${baseURL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
