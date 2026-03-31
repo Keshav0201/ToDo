@@ -12,7 +12,7 @@ const {auth} = require('./middleware/authMiddleware');
 
 app.use(express.json());
 app.use(cors({
-  origin: 'http://127.0.0.1:5500'
+  origin: "https://keshav0201.github.io"
 }));
 
 app.use('/api',auth,taskRoutes);
