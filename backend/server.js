@@ -1,0 +1,23 @@
+const express = require('express');
+const app = express();
+require('dotenv').config();
+const PORT = process.env.PORT;
+
+const cors = require('cors');
+
+
+const taskRoutes = require('./routes/taskRoutes');
+const authRoutes = require('./routes/authRoutes');
+const {auth} = require('./middleware/authMiddleware');
+
+app.use(express.json());
+app.use(cors({
+  origin: 'http://127.0.0.1:5500'
+}));
+
+app.use('/api',auth,taskRoutes);
+app.use('/auth',authRoutes);
+
+app.listen(PORT, () => {
+    console.log("Server started");
+})

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your ToDos</title>
+    <link rel="stylesheet" href="./css/tasks.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Todo App</h1>
+
+      <div class="input-group">
+        <input id="task-input" type="text" placeholder="Enter task" />
+        <button onclick="addTask()" id="task-input-button">Add</button>
+      </div>
+
+      <ul id="task-list-container"></ul>
+
+      <button onclick="logout()">Logout</button>
+    </div>
+    <script src="./js/config.js"></script>
+    <script src="./js/tasks.js"></script>
+  </body>
+</html>
