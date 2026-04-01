@@ -1,17 +1,17 @@
 const db = require("../config/db");
 
 function createTask(data, callback) {
-  const { title, user_id } = data;
-  const query = "INSERT INTO tasks (title,user_id) VALUES (?,?)";
+  const { title, user_id , due_date} = data;
+  const query = "INSERT INTO tasks (title,user_id,due_date) VALUES (?,?,?)";
 
-  db.query(query, [title, user_id], (err, result) => {
+  db.query(query, [title, user_id, due_date], (err, result) => {
     if (err) return callback(err, null);
     callback(null, result);
   });
 }
 
 function getAllTask(user_id, callback) {
-  const query = "SELECT * FROM tasks WHERE user_id = ?";
+  const query = "SELECT * FROM tasks WHERE user_id = ? ORDER BY due_date";
 
   db.query(query, [user_id], (err, result) => {
     if (err) return callback(err, null);

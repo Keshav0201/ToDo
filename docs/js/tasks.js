@@ -1,9 +1,18 @@
 const token = localStorage.getItem("token");
+let currentTab = "pending";
+const today = new Date().toLocaleDateString("en-CA");
 
 async function loadTasks() {
   if (!token) {
     window.location.href = "/auth.html";
   }
+
+  const pendingList = document.getElementById("pending-list");
+  const completedList = document.getElementById("completed-list");
+
+  renderMessage(pendingList, "Loading...");
+  renderMessage(completedList, "Loading...");
+
   try {
     const response = await fetchWithRetry(`${baseURL}/api/tasks`, {
       method: "GET",
@@ -11,6 +20,7 @@ async function loadTasks() {
         Authorization: `Bearer ${token}`,
       },
     });
+
     const data = await response.json();
 
     if (response.status === 401) {
@@ -24,42 +34,70 @@ async function loadTasks() {
       return;
     }
 
-    const taskList = document.getElementById("task-list-container");
-    taskList.innerHTML = "";
+    pendingList.innerHTML = "";
+    completedList.innerHTML = "";
+
+    const pendingTasks = data.todos.filter((t) => !t.completed);
+    const completedTasks = data.todos.filter((t) => t.completed);
+
+    if (pendingTasks.length === 0) {
+      renderMessage(pendingList, "No Pending Tasks");
+    }
+
+    if (completedTasks.length === 0) {
+      renderMessage(completedList, "No Completed Tasks");
+    }
 
     data.todos.forEach((task) => {
       const li = document.createElement("li");
 
-      const span = document.createElement("span");
-      span.textContent = task.title;
+      // Title
+      const title = document.createElement("span");
+      title.textContent = task.title;
 
-      li.appendChild(span);
-      if (!task.completed) {
-        const completedBtn = document.createElement("button");
-        completedBtn.textContent = "Completed";
-        completedBtn.id = "complete-button";
-        completedBtn.onclick = () => editTask(task.id);
-        li.appendChild(completedBtn);
-      } else {
-        span.classList.toggle("completed", task.completed);
+      // Due Date
+      const due = document.createElement("small");
+      if (task.due_date) {
+        const date = new Date(task.due_date).toLocaleDateString("en-CA");
+        due.textContent = `Due: ${date}`;
       }
 
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "Delete";
-      deleteBtn.id = "delete-button";
-      deleteBtn.onclick = () => deleteTask(task.id);
+      if (task.due_date && task.due_date < today && !task.completed) {
+        // mark as overdue
+        title.classList.add("overdue");
+      }
 
-      li.appendChild(deleteBtn);
+      const left = document.createElement("div");
+      left.appendChild(title);
+      left.appendChild(due);
 
-      taskList.appendChild(li);
+      li.appendChild(left);
+
+      // BUTTON LOGIC
+      if (!task.completed) {
+        const completeBtn = document.createElement("button");
+        completeBtn.textContent = "Complete";
+        completeBtn.onclick = () => editTask(task.id, completeBtn);
+        li.appendChild(completeBtn);
+
+        pendingList.appendChild(li);
+      } else {
+        title.classList.add("completed");
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.onclick = () => deleteTask(task.id, deleteBtn);
+        li.appendChild(deleteBtn);
+
+        completedList.appendChild(li);
+      }
     });
   } catch (err) {
     console.error("Network error:", err);
   }
 }
 
-async function deleteTask(id) {
-  const button = document.getElementById("delete-button");
+async function deleteTask(id, button) {
   button.innerText = "Deleting";
   button.disabled = true;
 
@@ -94,12 +132,26 @@ async function addTask() {
   const button = document.getElementById("task-input-button");
   button.innerText = "Adding";
   button.disabled = true;
+  const date = document.getElementById("date-input");
+  const due_date = date.value || null;
 
   if (!token) {
     window.location.href = "/auth.html";
   }
 
-  if (!title) return;
+  if (!title){
+    alert("Enter a title");
+    button.innerText = "Add";
+    button.disabled = false;
+    return;
+  }
+
+  if (due_date && due_date < today) {
+    alert("Due date cannot be in past");
+    button.innerText = "Add";
+    button.disabled = false;
+    return;
+  }
 
   try {
     const response = await fetchWithRetry(`${baseURL}/api/tasks`, {
@@ -108,7 +160,7 @@ async function addTask() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ title }),
+      body: JSON.stringify({ title, due_date }),
     });
 
     const data = await response.json();
@@ -125,10 +177,10 @@ async function addTask() {
   }
   button.innerText = "Add";
   button.disabled = false;
+  closeDialog();
 }
 
-async function editTask(id) {
-  const button = document.getElementById("complete-button");
+async function editTask(id, button) {
   button.innerText = "Loading";
   button.disabled = true;
   if (!token) {
@@ -156,6 +208,55 @@ async function editTask(id) {
   button.disabled = true;
 }
 
+function renderMessage(list, message) {
+  list.innerHTML = "";
+
+  const li = document.createElement("li");
+  const span = document.createElement("span");
+  span.textContent = message;
+
+  li.appendChild(span);
+  list.appendChild(li);
+}
+
+function showTab(tab) {
+  currentTab = tab;
+  const pending = document.getElementById("pending-list");
+  const completed = document.getElementById("completed-list");
+
+  const pendingTab = document.getElementById("pending-tab");
+  const completedTab = document.getElementById("completed-tab");
+
+  if (tab === "pending") {
+    pending.classList.remove("hidden");
+    completed.classList.add("hidden");
+
+    pendingTab.classList.add("active");
+    completedTab.classList.remove("active");
+  } else {
+    completed.classList.remove("hidden");
+    pending.classList.add("hidden");
+
+    completedTab.classList.add("active");
+    pendingTab.classList.remove("active");
+  }
+}
+
+function toggleSection(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle("hidden");
+}
+
+function openDialog() {
+  const dialog = document.querySelector(".input-dialog");
+  dialog.classList.remove("hidden");
+}
+
+function closeDialog() {
+  const dialog = document.querySelector(".input-dialog");
+  dialog.classList.add("hidden");
+}
+
 function logout() {
   localStorage.removeItem("token");
   window.location.href = "index.html";
@@ -170,3 +271,4 @@ document
   });
 
 loadTasks();
+showTab(currentTab);

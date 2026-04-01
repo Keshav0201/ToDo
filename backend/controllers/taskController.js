@@ -1,13 +1,13 @@
 const taskModel = require("../models/taskModel");
 
 function createTask(req, res) {
-  const { title } = req.body;
+  const { title , due_date} = req.body;
   const user_id = req.user.id;
   if (!title) {
     return res.status(400).json({ error: "Title is required" });
   }
 
-  taskModel.createTask({title, user_id}, (err, result) => {
+  taskModel.createTask({title, user_id, due_date}, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "DB error" });
     }

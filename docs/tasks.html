@@ -8,16 +8,44 @@
   </head>
   <body>
     <div class="container">
-      <h1>Todo App</h1>
+      <div class="input-dialog hidden">
+        <div class="dialog-box">
+          <input id="task-input" type="text" placeholder="Enter task" />
+          <input type="date" name="due_date" id="date-input" />
 
-      <div class="input-group">
-        <input id="task-input" type="text" placeholder="Enter task" />
-        <button onclick="addTask()" id="task-input-button">Add</button>
+          <button type="button" onclick="addTask()" id="task-input-button">
+            Add
+          </button>
+          <button
+            type="button"
+            onclick="closeDialog()"
+            id="input-dialog-close-button"
+          >
+            Close
+          </button>
+        </div>
       </div>
 
-      <ul id="task-list-container"></ul>
+      <h1>Todo App</h1>
 
-      <button onclick="logout()">Logout</button>
+      <button
+        type="button"
+        onclick="openDialog()"
+        id="input-dialog-open-button"
+      >
+        Input new ToDo
+      </button>
+      <div class="tabs">
+        <button onclick="showTab('pending')" id="pending-tab">Pending</button>
+        <button onclick="showTab('completed')" id="completed-tab">
+          Completed
+        </button>
+      </div>
+
+      <ul id="pending-list"></ul>
+      <ul id="completed-list" class="hidden"></ul>
+
+      <button type="button" onclick="logout()" id="logout-button">Logout</button>
     </div>
     <script src="./js/config.js"></script>
     <script src="./js/tasks.js"></script>
