@@ -37,6 +37,7 @@ async function loadTasks() {
       if (!task.completed) {
         const completedBtn = document.createElement("button");
         completedBtn.textContent = "Completed";
+        completedBtn.id = "complete-button";
         completedBtn.onclick = () => editTask(task.id);
         li.appendChild(completedBtn);
       } else {
@@ -45,6 +46,7 @@ async function loadTasks() {
 
       const deleteBtn = document.createElement("button");
       deleteBtn.textContent = "Delete";
+      deleteBtn.id = "delete-button";
       deleteBtn.onclick = () => deleteTask(task.id);
 
       li.appendChild(deleteBtn);
@@ -57,15 +59,19 @@ async function loadTasks() {
 }
 
 async function deleteTask(id) {
+  const button = document.getElementById("delete-button");
+  button.innerText = "Deleting";
+  button.disabled = true;
+
   if (!token) {
     window.location.href = "/auth.html";
   }
   try {
     const response = await fetchWithRetry(`${baseURL}/api/delete/${id}`, {
       method: "DELETE",
-      headers:{
-        "Authorization" : `Bearer ${token}`
-      }
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
 
@@ -74,16 +80,21 @@ async function deleteTask(id) {
       return;
     }
 
-    alert("Task deleted");
     loadTasks();
   } catch (error) {
     console.error("Network error:", error);
   }
+  button.innerText = "Delete";
+  button.disabled = false;
 }
 
 async function addTask() {
   const input = document.getElementById("task-input");
   const title = input.value;
+  const button = document.getElementById("task-input-button");
+  button.innerText = "Adding";
+  button.disabled = true;
+
   if (!token) {
     window.location.href = "/auth.html";
   }
@@ -95,7 +106,7 @@ async function addTask() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ title }),
     });
@@ -108,14 +119,18 @@ async function addTask() {
     }
 
     input.value = "";
-    alert("Task added");
     loadTasks();
   } catch (error) {
     console.error("Error:", error);
   }
+  button.innerText = "Add";
+  button.disabled = false;
 }
 
 async function editTask(id) {
+  const button = document.getElementById("complete-button");
+  button.innerText = "Loading";
+  button.disabled = true;
   if (!token) {
     window.location.href = "/auth.html";
   }
@@ -123,8 +138,8 @@ async function editTask(id) {
     const response = await fetchWithRetry(`${baseURL}/api/update/${id}`, {
       method: "POST",
       headers: {
-        "Authorization":`Bearer ${token}`,
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
 
@@ -133,23 +148,25 @@ async function editTask(id) {
       return;
     }
 
-    alert("Task completed YAYYYY");
     loadTasks();
   } catch (error) {
     console.error("Error:", error);
   }
+  button.innerText = "Completed";
+  button.disabled = true;
 }
 
-function logout(){
+function logout() {
   localStorage.removeItem("token");
-  window.location.href="index.html";
+  window.location.href = "index.html";
 }
 
-document.getElementById("task-input")
+document
+  .getElementById("task-input")
   .addEventListener("keypress", function (e) {
     if (e.key === "Enter") {
       document.getElementById("task-input-button").click();
     }
-});
+  });
 
 loadTasks();

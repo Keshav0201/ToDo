@@ -1,4 +1,6 @@
-const baseURL="https://todo-1-zju0.onrender.com";
+const baseURL=window.location.hostname === "127.0.0.1"
+    ? "http://localhost:3016"
+    : "https://todo-1-zju0.onrender.com";;
 
 async function fetchWithRetry(url, options, retries = 3, delay = 2000) {
   try {

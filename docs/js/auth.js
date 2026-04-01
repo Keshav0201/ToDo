@@ -5,6 +5,9 @@ async function signup() {
   const password = passContainer.value;
   if (!email) return;
   if (!password) return;
+  const button = document.getElementById("signup-button");
+  button.innerText="Signing Up"
+  button.disabled = true;
 
   try {
     const response = await fetchWithRetry(`${baseURL}/auth/signup`, {
@@ -24,7 +27,6 @@ async function signup() {
 
     const token = data.result.token;
     localStorage.setItem("token",token);
-    alert("Signned Up successfully");
 
     window.location.href="tasks.html";
 
@@ -32,6 +34,8 @@ async function signup() {
     console.error("Error:", err);
     return;
   }
+  button.innerText="Sign Up"
+  button.disabled = true;
 }
 
 async function login() {
@@ -41,6 +45,9 @@ async function login() {
   const password = passContainer.value;
   if (!email) return;
   if (!password) return;
+  const button = document.getElementById("login-button");
+  button.innerText="Logging Up"
+  button.disabled = true;
 
   try {
     const response = await fetchWithRetry(`${baseURL}/auth/login`, {
@@ -60,14 +67,14 @@ async function login() {
 
     const token = data.result.token;
     localStorage.setItem("token",token);
-    alert("Logged In successfully");
-
     window.location.href="tasks.html";
 
   } catch (err) {
     console.error("Error:", err);
     return;
   }
+  button.innerText="Login"
+  button.disabled = true;
 }
 
 async function checkLogin() {
