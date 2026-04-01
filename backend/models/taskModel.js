@@ -11,7 +11,7 @@ function createTask(data, callback) {
 }
 
 function getAllTask(user_id, callback) {
-  const query = "SELECT * FROM tasks WHERE user_id = ?";
+  const query = "SELECT * FROM tasks WHERE user_id = ? ORDER BY due_date";
 
   db.query(query, [user_id], (err, result) => {
     if (err) return callback(err, null);

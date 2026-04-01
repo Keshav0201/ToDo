@@ -1,5 +1,6 @@
 const token = localStorage.getItem("token");
 let currentTab = "pending";
+const today = new Date().toLocaleDateString("en-CA");
 
 async function loadTasks() {
   if (!token) {
@@ -36,15 +37,15 @@ async function loadTasks() {
     pendingList.innerHTML = "";
     completedList.innerHTML = "";
 
-    const pendingTasks = data.todos.filter(t => !t.completed);
-    const completedTasks = data.todos.filter(t => t.completed);
+    const pendingTasks = data.todos.filter((t) => !t.completed);
+    const completedTasks = data.todos.filter((t) => t.completed);
 
     if (pendingTasks.length === 0) {
       renderMessage(pendingList, "No Pending Tasks");
     }
 
     if (completedTasks.length === 0) {
-    renderMessage(completedList, "No Completed Tasks");
+      renderMessage(completedList, "No Completed Tasks");
     }
 
     data.todos.forEach((task) => {
@@ -57,8 +58,13 @@ async function loadTasks() {
       // Due Date
       const due = document.createElement("small");
       if (task.due_date) {
-        const date = new Date(task.due_date).toISOString().split("T")[0];
+        const date = new Date(task.due_date).toLocaleDateString("en-CA");
         due.textContent = `Due: ${date}`;
+      }
+
+      if (task.due_date && task.due_date < today && !task.completed) {
+        // mark as overdue
+        title.classList.add("overdue");
       }
 
       const left = document.createElement("div");
@@ -127,13 +133,25 @@ async function addTask() {
   button.innerText = "Adding";
   button.disabled = true;
   const date = document.getElementById("date-input");
-  const due_date = date.value;
+  const due_date = date.value || null;
 
   if (!token) {
     window.location.href = "/auth.html";
   }
 
-  if (!title) return;
+  if (!title){
+    alert("Enter a title");
+    button.innerText = "Add";
+    button.disabled = false;
+    return;
+  }
+
+  if (due_date && due_date < today) {
+    alert("Due date cannot be in past");
+    button.innerText = "Add";
+    button.disabled = false;
+    return;
+  }
 
   try {
     const response = await fetchWithRetry(`${baseURL}/api/tasks`, {
@@ -142,7 +160,7 @@ async function addTask() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ title , due_date}),
+      body: JSON.stringify({ title, due_date }),
     });
 
     const data = await response.json();
@@ -229,13 +247,12 @@ function toggleSection(id) {
   el.classList.toggle("hidden");
 }
 
-function openDialog(){
+function openDialog() {
   const dialog = document.querySelector(".input-dialog");
   dialog.classList.remove("hidden");
 }
 
-function closeDialog(){
-  console.log("clicked");
+function closeDialog() {
   const dialog = document.querySelector(".input-dialog");
   dialog.classList.add("hidden");
 }

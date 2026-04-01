@@ -207,16 +207,15 @@ small {
   color: #777;
 }
 
-/* Completed task */
-.completed {
-  text-decoration: line-through;
-  color: gray;
-}
-
 /* Overdue highlight (optional 🔥) */
 .overdue {
   color: red;
   font-weight: bold;
+}
+
+.overdue::after {
+  content: " ⚠ Overdue";
+  font-size: 12px;
 }
 
 .tabs {
