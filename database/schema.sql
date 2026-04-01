@@ -8,7 +8,8 @@ CREATE TABLE tasks (
   title VARCHAR(255) NOT NULL,
   completed BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  user_id VARCHAR(36)
+  user_id VARCHAR(36),
+  due_date DATE,
 );
 
 CREATE TABLE users (

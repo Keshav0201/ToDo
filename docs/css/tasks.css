@@ -31,27 +31,7 @@ h1 {
   color: #333;
 }
 
-/* Input Section */
-.input-group {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-#task-input {
-  flex: 1;
-  padding: 10px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  outline: none;
-  transition: 0.2s;
-}
-
-#task-input:focus {
-  border-color: #667eea;
-}
-
-/* Add Button */
+/* Button (global) */
 button {
   padding: 10px 14px;
   border: none;
@@ -100,4 +80,170 @@ li button {
 
 li button:hover {
   background: #e63946;
+}
+
+/* ================= MODAL FIX ================= */
+
+/* Hide utility */
+.hidden {
+  display: none !important;
+}
+
+/* Overlay */
+.input-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+}
+
+/* Dialog Box (NEW FIX) */
+.dialog-box {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  width: 300px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+  animation: fadeIn 0.2s ease;
+}
+
+/* Inputs inside modal */
+.dialog-box input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 14px;
+}
+
+.dialog-box input:focus {
+  border-color: #667eea;
+}
+
+/* Buttons inside modal */
+.dialog-box button {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Add button */
+#task-input-button {
+  background: #4caf50;
+}
+
+#task-input-button:hover {
+  background: #43a047;
+}
+
+#input-dialog-open-button {
+  display: block;
+  margin: 0 auto 20px auto; 
+  padding: 12px 18px;
+  font-weight: bold;
+}
+
+/* Close button */
+#input-dialog-close-button {
+  background: #f44336;
+}
+
+#input-dialog-close-button:hover {
+  background: #d32f2f;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Section headers */
+h3 {
+  margin-top: 15px;
+  cursor: pointer;
+  color: #444;
+}
+
+/* Task layout */
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Left side (title + date) */
+li div {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Due date */
+small {
+  font-size: 12px;
+  color: #777;
+}
+
+/* Completed task */
+.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
+/* Overdue highlight (optional 🔥) */
+.overdue {
+  color: red;
+  font-weight: bold;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.tabs button {
+  flex: 1;
+  background: #ddd;
+  color: #333;
+}
+
+.tabs button.active {
+  background: #667eea;
+  color: white;
+}
+
+#logout-button{
+  display: block;
+  margin: 0 auto 0 auto;
+}
+
+li span {
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  display: block;
 }
